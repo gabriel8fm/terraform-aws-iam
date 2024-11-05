@@ -5,7 +5,7 @@ resource "aws_iam_role" "iam_role" {
 
 resource "aws_iam_policy_attachment" "attach_admin_policy_to_role" {
   name       = "attach-admin-policy-to-role"
-  roles      = [aws_iam_role.tech_interview_role.name]
+  roles      = [aws_iam_role.iam_role.name]
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
@@ -26,7 +26,8 @@ resource "aws_iam_user_group_membership" "iam_user_group_membership" {
   groups = [aws_iam_group.iam_group.name]
 }
 
-resource "aws_iam_group_policy_attachment" "attach_admin_policy_to_group" {
+resource "aws_iam_group_policy_attachment" "attach_policies_to_group" {
+  count      = length(var.policy_arns)  # Create one attachment per policy ARN
   group      = aws_iam_group.iam_group.name
   policy_arn = var.policy_arns[count.index]
 }
